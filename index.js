@@ -23,7 +23,6 @@ let dict = [
 ];
 
 let input = document.getElementById("word");
-const btn = document.getElementById("start");
 let restartBtn = document.getElementById("restartBtn");
 let WordleGame = document.getElementById("output");
 let secretWord = dict[Math.floor(Math.random() * dict.length)];
@@ -36,10 +35,6 @@ input.addEventListener("keyup", function (event) {
   }
 });
 
-btn.addEventListener("click", () => {
-  checkWord(input);
-});
-
 restartBtn.addEventListener("click", () => {
   restart();
 });
@@ -50,19 +45,19 @@ function checkWord(input) {
     Swal.fire({
       icon: "error",
       title: "Error",
-      text: "Only letters are allowed",
+      text: "Solo puedes ingresar letras 📏",
     });
   } else if (word === "") {
     Swal.fire({
       icon: "error",
       title: "Error",
-      text: "Enter a word",
+      text: "Ingresa una palabra 📑",
     });
   } else if (word.length !== 5) {
     Swal.fire({
       icon: "error",
       title: "Error",
-      text: "Enter a 5 letters word",
+      text: "Ingresa una palabra de 5 letras 📐",
     });
   } else if (word.length === 5) {
     startGame(word, secretWord);
@@ -70,7 +65,7 @@ function checkWord(input) {
     Swal.fire({
       icon: "error",
       title: "Error",
-      text: "Something went wrong",
+      text: "Algo salio mal 😞",
     });
   }
 }
@@ -79,20 +74,20 @@ function startGame(word, secretWord) {
   word = word.toUpperCase();
   secretWord = secretWord.toUpperCase();
   tries++;
-  intentos.innerHTML = "Tries: " + tries;
+  intentos.innerHTML = "Intentos: " + tries;
   if (word === secretWord) {
     Swal.fire({
       icon: "success",
-      title: "Winner",
-      text: "You win",
+      title: "Ganador!",
+      text: "Ganaste 🎉, tu palabra era: " + secretWord.toLowerCase(),
     });
     restart();
   } else {
     if (tries > 6) {
       Swal.fire({
         icon: "error",
-        title: "Game Over",
-        text: "You lose! The word was: " + secretWord.toLowerCase(),
+        title: "Game Over!",
+        text: "Perdiste😬, tu palabra era: " + secretWord.toLowerCase(),
       });
       restart();
     } else if (tries <= 6) {
@@ -124,7 +119,7 @@ function restart() {
   WordleGame.innerHTML = "";
   input.value = "";
   tries = 0;
-  intentos.innerHTML = "Tries: " + tries;
+  intentos.innerHTML = "Intentos: " + tries;
   secretWord = dict[Math.floor(Math.random() * dict.length)];
   console.log(secretWord);
 }
