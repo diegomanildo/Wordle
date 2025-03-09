@@ -1,125 +1,174 @@
-let dict = [
-  "gatos",
-  "papas",
-  "fuego",
-  "huevo",
-  "color",
-  "casas",
-  "arbol",
-  "nueve",
-  "zorro",
-  "remar",
-  "locro",
-  "jamon",
-  "feliz",
-  "cinco",
-  "tonto",
-  "cuero",
-  "volar",
-  "vuelo",
-  "avion",
-  "genio",
-  "pibes",
+const wordsList = [
+  "apple",
+  "table",
+  "chair",
+  "stone",
+  "water",
+  "light",
+  "music",
+  "peace",
+  "dance",
+  "watch",
+  "smile",
+  "happy",
+  "grass",
+  "pizza",
+  "cloud",
+  "sleep",
+  "drink",
+  "flame",
+  "brush",
+  "beach",
+  "plant",
+  "liver",
+  "piano",
+  "peace",
+  "vivid",
+  "plane",
+  "sport",
+  "dream",
+  "earth",
+  "fruit",
+  "grape",
+  "bacon",
+  "candy",
+  "laser",
+  "ghost",
+  "sword",
+  "sweep",
+  "track",
+  "jumpy",
+  "swirl",
 ];
 
-let input = document.getElementById("word");
-let restartBtn = document.getElementById("restartBtn");
-let WordleGame = document.getElementById("output");
-let secretWord = dict[Math.floor(Math.random() * dict.length)];
-let tries = 0;
-let intentos = document.getElementById("tries");
+const WORD_LENGTH = 5;
 
-input.addEventListener("keyup", function (event) {
-  if (event.keyCode === 13) {
-    checkWord(input);
-  }
-});
+const verifyWords = () => {
+  wordsList.forEach(word => {
+    if (word.length !== WORD_LENGTH) {
+      console.error(`Word ${word} is not valid because it must be of length ${WORD_LENGTH} and is ${word.length}`);
+    }
+  });
+};
 
-restartBtn.addEventListener("click", () => {
-  restart();
-});
+verifyWords();
 
-function checkWord(input) {
-  let word = input.value;
-  if (word.match(/[^a-zA-Z]/)) {
-    Swal.fire({
-      icon: "error",
-      title: "Error",
-      text: "Solo puedes ingresar letras 📏",
-    });
-  } else if (word === "") {
-    Swal.fire({
-      icon: "error",
-      title: "Error",
-      text: "Ingresa una palabra 📑",
-    });
-  } else if (word.length !== 5) {
-    Swal.fire({
-      icon: "error",
-      title: "Error",
-      text: "Ingresa una palabra de 5 letras 📐",
-    });
-  } else if (word.length === 5) {
-    startGame(word, secretWord);
-  } else {
-    Swal.fire({
-      icon: "error",
-      title: "Error",
-      text: "Algo salio mal 😞",
-    });
-  }
+function getRandomWord() {
+  const word = wordsList[Math.floor(Math.random() * wordsList.length)].toLowerCase();
+  console.log(`Secret word: "${word}"`);
+  return word;
 }
 
-function startGame(word, secretWord) {
-  word = word.toUpperCase();
-  secretWord = secretWord.toUpperCase();
+let correctWord = getRandomWord();
+
+let tries = 0;
+const maxTries = 6;
+let gameOver = false;
+
+const wordInput = document.getElementById("word");
+const triesElement = document.getElementById("tries");
+const outputElement = document.getElementById("output");
+const restartBtn = document.getElementById("restartBtn");
+
+function isValidWord(word) {
+  let error;
+
+  if (!/^[a-zA-Z]+$/.test(word)) {
+    error = "📏 You can only enter letters.";
+  }
+
+  if (word.length !== WORD_LENGTH) {
+    error = `📐 Enter a ${WORD_LENGTH} letter word.`;
+  }
+
+  if (word === "") {
+    error = "📑 Enter a word.";
+  }
+
+  if (error) {
+    Swal.fire({
+      icon: "warning",
+      title: error,
+    });
+  }
+
+  return error === undefined;
+}
+
+function handleAttempt() {
+  if (gameOver)
+    return;
+
+  const userWord = wordInput.value.toLowerCase().trim();
+
+  if (!isValidWord(userWord))
+    return;
+
   tries++;
-  intentos.innerHTML = "Intentos: " + tries;
-  if (word === secretWord) {
+  triesElement.textContent = `Try: ${tries} of ${maxTries}`;
+
+  if (userWord === correctWord) {
     Swal.fire({
       icon: "success",
-      title: "Ganador!",
-      text: "Ganaste 🎉, tu palabra era: " + secretWord.toLowerCase(),
+      title: "You win!",
+      text: "🎉 Congratulations, you guessed the word!",
     });
-    restart();
-  } else {
-    if (tries > 6) {
-      Swal.fire({
-        icon: "error",
-        title: "Game Over!",
-        text: "Perdiste😬, tu palabra era: " + secretWord.toLowerCase(),
-      });
-      restart();
-    } else if (tries <= 6) {
-      for (let i = 0; i < secretWord.length; i++) {
-        var fila = document.createElement("div");
-        fila.classList.add("fila");
-        if (word[i] === secretWord[i]) {
-          fila.style.backgroundColor = "#05c46b";
-        } else if (secretWord.includes(word[i])) {
-          fila.style.backgroundColor = "#ffd32a";
-        } else {
-          fila.style.backgroundColor = "gray";
-        }
-        fila.style.color = "#131313";
-        fila.style.width = "50px";
-        fila.style.height = "50px";
 
-        fila.textContent = word[i];
-        WordleGame.appendChild(fila);
-      }
-
-      WordleGame.appendChild(document.createElement("br"));
-      WordleGame.appendChild(document.createElement("br"));
-    }
+    gameOver = true;
+    return;
   }
+
+  displayAttempt(userWord);
+
+  if (tries === maxTries) {
+    Swal.fire({
+      icon: "error",
+      title: "You lost!",
+      text: `😞 The word was "${correctWord}"`,
+    });
+    gameOver = true;
+  }
+
+  wordInput.value = "";
 }
 
-function restart() {
-  WordleGame.innerHTML = "";
-  input.value = "";
-  tries = 0;
-  intentos.innerHTML = "Intentos: " + tries;
-  secretWord = dict[Math.floor(Math.random() * dict.length)];
-  console.log(secretWord);
+function displayAttempt(word) {
+  const attemptContainer = document.createElement("div");
+  attemptContainer.classList.add("attempt-container");
+
+  for (let i = 0; i < word.length; i++) {
+    const letterBox = document.createElement("div");
+    letterBox.classList.add("fila");
+
+    if (word[i] === correctWord[i]) {
+      letterBox.style.backgroundColor = "#05c46b"; // Green
+    } else if (correctWord.includes(word[i])) {
+      letterBox.style.backgroundColor = "#f39c12"; // Yellow
+    } else {
+      letterBox.style.backgroundColor = "#808080"; // Red
+    }
+
+    letterBox.textContent = word[i].toUpperCase();
+    attemptContainer.appendChild(letterBox);
+  }
+
+  outputElement.appendChild(attemptContainer);
 }
+
+function restartGame() {
+  tries = 0;
+  gameOver = false;
+  triesElement.textContent = "";
+  outputElement.innerHTML = "";
+  wordInput.value = "";
+
+  correctWord = getRandomWord();
+}
+
+restartBtn.addEventListener("click", restartGame);
+
+wordInput.addEventListener("keypress", e => {
+  if (e.key === "Enter") {
+    handleAttempt();
+  }
+});
