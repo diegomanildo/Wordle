@@ -25,4 +25,4 @@ Contributions are welcome! If you want to improve the game or add new features:
 4. Submit a Pull Request detailing your contributions.
 
 ## 📷 Screenshots
-![Screenshot](./docs/images/image.png)
+![Screenshot](./docs/images/1.png)
