@@ -23,3 +23,6 @@ Contributions are welcome! If you want to improve the game or add new features:
 2. Create a new branch (`git checkout -b feature/new-feature`).
 3. Make changes and commit them with descriptive messages.
 4. Submit a Pull Request detailing your contributions.
+
+## 📷 Screenshots
+![Screenshot](./docs/images/image.png)
