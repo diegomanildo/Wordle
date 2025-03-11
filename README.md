@@ -26,3 +26,5 @@ Contributions are welcome! If you want to improve the game or add new features:
 
 ## 📷 Screenshots
 ![Screenshot](./docs/images/1.png)
+![Screenshot](./docs/images/2.png)
+![Screenshot](./docs/images/3.png)
